@@ -1,1 +1,5 @@
-<p>home works!</p>
+<div class="row">
+  <div class="col-sm-3" *ngFor="let index of indexes">
+    <app-ticker [index]="index"></app-ticker>
+  </div>
+</div>
