@@ -11,19 +11,21 @@ import {DataService} from "../shared/data.service";
 export class HomeComponent implements OnInit {
   public indexes: Array<Index>;
   public users: Array<User>;
+  public columnCounts: Array<number> = new Array<number>();
   public symbols: Array<string>;
-  public chartWidth: number = 960;
-  public columnCount: number;
+  public chartWidth: number = 800;
   public bootstrapColClass: string;
   public selectedUser: string;
+  public selectedColumnCount: number = 2;
 
   constructor(private dataService: DataService) {
   }
 
   public ngOnInit() {
+    this.calculateColumnCount();
     this.calculateChartWidth();
     this.initializeIndexes();
-    this.getIndexes();
+    this.loadIndexes();
     this.getUsers();
   }
 
@@ -33,22 +35,34 @@ export class HomeComponent implements OnInit {
       if (user) {
         this.symbols = user.symbols;
       }
+    } else {
+      this.symbols = new Array<string>();
+    }
+  }
+
+  public columnCountChanged() {
+    this.calculateChartWidth();
+    this.selectedUser = "";
+    this.userChanged();
+  }
+
+  private calculateColumnCount() {
+    const screenWidth = Math.floor(window.innerWidth - 50);
+    const possibleColumnCount = Math.floor(screenWidth / this.chartWidth);
+
+    for (let i = 0; i <= possibleColumnCount; i++) {
+      this.columnCounts.push(i + 1);
+    }
+
+    if (this.selectedColumnCount > possibleColumnCount) {
+      this.selectedColumnCount = possibleColumnCount;
     }
   }
 
   private calculateChartWidth() {
     const screenWidth = Math.floor(window.innerWidth - 50);
-    const possibleColumnCount = Math.floor(screenWidth / this.chartWidth);
-    const columnWidth = Math.floor(screenWidth / possibleColumnCount);
-
-    if (this.chartWidth < columnWidth) {
-      this.chartWidth = columnWidth;
-    } else if (this.chartWidth > screenWidth) {
-      this.chartWidth = screenWidth;
-    }
-
-    this.columnCount = Math.floor(screenWidth / this.chartWidth);
-    this.bootstrapColClass = `col-${Math.floor(12 / this.columnCount)}`;
+    this.chartWidth = Math.floor(screenWidth / this.selectedColumnCount);
+    this.bootstrapColClass = `col-${Math.floor(12 / this.selectedColumnCount)}`;
   }
 
   private initializeIndexes() {
@@ -67,29 +81,34 @@ export class HomeComponent implements OnInit {
     const now = new Date();
     const day = now.getDay();
     const hour = now.getHours();
-    if (day > 0 && day < 7 && hour >= 9 && hour < 16) {
+    if (day > 0 && day < 6 && hour >= 9 && hour < 16) {
       return true;
     }
     return false;
   }
 
-  private getIndexes() {
+  private loadIndexes() {
+    this.getIndexes();
     setInterval(() => {
       if (this.isMarketOpen()) {
-        this.dataService.getIndexes().subscribe((resp: IndexCollection) => {
-          this.indexes.forEach(i => {
-            const index = resp.result.find(x => x.name === i.name);
-            if (index) {
-              i.current = index.current;
-              i.change = index.change;
-              i.advances = index.advances;
-              i.declines = index.declines;
-              i.unchanged = index.unchanged;
-            }
-          });
-        });
+        this.getIndexes();
       }
     }, 6000);
+  }
+
+  private getIndexes() {
+    this.dataService.getIndexes().subscribe((resp: IndexCollection) => {
+      this.indexes.forEach(i => {
+        const index = resp.result.find(x => x.name === i.name);
+        if (index) {
+          i.current = index.current;
+          i.change = index.change;
+          i.advances = index.advances;
+          i.declines = index.declines;
+          i.unchanged = index.unchanged;
+        }
+      });
+    });
   }
 
   private getUsers() {
