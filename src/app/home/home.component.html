@@ -1,0 +1,18 @@
+<div class="row">
+  <div class="col-sm-3" *ngFor="let index of indexes">
+    <app-ticker [index]="index"></app-ticker>
+  </div>
+  <div class="col-sm-3"></div>
+  <div class="col-sm-3">
+    <select class="form-select" [(ngModel)]="selectedUser" (change)="userChanged()">
+      <option *ngFor="let user of users" [value]="user.name">{{user.name}}</option>
+    </select>
+  </div>
+</div>
+<div class="mt-3">
+  <div class="row">
+    <div class="{{bootstrapColClass}} mb-3" *ngFor="let symbol of symbols">
+      <app-chart [symbol]="symbol" [width]="chartWidth"></app-chart>
+    </div>
+  </div>
+</div>
