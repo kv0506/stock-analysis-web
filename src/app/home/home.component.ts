@@ -1,8 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {Index, IndexCollection} from "../shared/models";
-import {HttpClient} from "@angular/common/http";
 import {User, UserCollection} from "../shared/models/user";
-import {Observable} from "rxjs";
+import {DataService} from "../shared/data.service";
 
 @Component({
   selector: 'app-home',
@@ -18,11 +17,12 @@ export class HomeComponent implements OnInit {
   public bootstrapColClass: string;
   public selectedUser: string;
 
-  constructor(private http: HttpClient) {
+  constructor(private dataService: DataService) {
   }
 
   public ngOnInit() {
     this.calculateChartWidth();
+    this.initializeIndexes();
     this.getIndexes();
     this.getUsers();
   }
@@ -51,14 +51,49 @@ export class HomeComponent implements OnInit {
     this.bootstrapColClass = `col-${Math.floor(12 / this.columnCount)}`;
   }
 
+  private initializeIndexes() {
+    this.indexes = new Array<Index>();
+
+    const nifty50 = new Index();
+    nifty50.name = 'NIFTY 50';
+    this.indexes.push(nifty50);
+
+    const niftyBank = new Index();
+    niftyBank.name = 'NIFTY BANK';
+    this.indexes.push(niftyBank);
+  }
+
+  private isMarketOpen(): boolean {
+    const now = new Date();
+    const day = now.getDay();
+    const hour = now.getHours();
+    if (day > 0 && day < 7 && hour >= 9 && hour < 16) {
+      return true;
+    }
+    return false;
+  }
+
   private getIndexes() {
-    this.http.get<IndexCollection>('https://stock-analysis.azurewebsites.net/api/live-market').subscribe((resp: IndexCollection) => {
-      this.indexes = resp.result;
-    })
+    setInterval(() => {
+      if (this.isMarketOpen()) {
+        this.dataService.getIndexes().subscribe((resp: IndexCollection) => {
+          this.indexes.forEach(i => {
+            const index = resp.result.find(x => x.name === i.name);
+            if (index) {
+              i.current = index.current;
+              i.change = index.change;
+              i.advances = index.advances;
+              i.declines = index.declines;
+              i.unchanged = index.unchanged;
+            }
+          });
+        });
+      }
+    }, 6000);
   }
 
   private getUsers() {
-    this.http.get<UserCollection>('https://stock-analysis.azurewebsites.net/api/users').subscribe((resp: UserCollection) => {
+    this.dataService.getUsers().subscribe((resp: UserCollection) => {
       this.users = resp.users;
     })
   }
