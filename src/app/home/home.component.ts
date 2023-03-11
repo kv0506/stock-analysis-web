@@ -12,7 +12,7 @@ export class HomeComponent implements OnInit {
   public indexes: Array<Index>;
   public users: Array<User>;
   public symbols: Array<string>;
-  public chartWidth: number = 620;
+  public chartWidth: number = 800;
   public columnCount: number;
   public bootstrapColClass: string;
   public selectedUser: string;
