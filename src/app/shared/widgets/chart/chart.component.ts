@@ -30,6 +30,9 @@ export class ChartComponent implements OnInit, AfterViewInit {
       withdateranges: true,
       hide_side_toolbar: false,
       allow_symbol_change: true,
+      show_popup_button: true,
+      popup_width: 1366,
+      popup_height: 768,
       studies: [
         {
           id: "MAExp@tv-basicstudies",
@@ -61,5 +64,4 @@ export class ChartComponent implements OnInit, AfterViewInit {
       container_id: this.controlId,
     });
   }
-
 }
