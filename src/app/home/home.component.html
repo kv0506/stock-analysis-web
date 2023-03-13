@@ -1,5 +1,5 @@
 <div class="container-fluid bg-primary text-white">
-  <div class="d-flex {{flexLayout ? 'align-items-center' : 'flex-column'}}">
+  <div class="d-flex {{columnLayoutInHeader ? 'align-items-center' : 'flex-column'}}">
     <div class="me-auto p-2"><a class="nav-link" href="#" routerLink="/">Stock Analysis</a></div>
     <div class="p-1" *ngFor="let index of indexes">
       <app-ticker [index]="index"></app-ticker>

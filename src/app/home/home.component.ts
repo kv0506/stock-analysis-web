@@ -16,8 +16,8 @@ export class HomeComponent implements OnInit {
   public chartWidth: number = 800;
   public bootstrapColClass: string;
   public selectedUser: string;
-  public selectedColumnCount: number = 2;
-  public flexLayout: boolean = true;
+  public selectedColumnCount: number;
+  public columnLayoutInHeader: boolean;
 
   constructor(private dataService: DataService) {
   }
@@ -55,13 +55,8 @@ export class HomeComponent implements OnInit {
       this.columnCounts.push(i + 1);
     }
 
-    if (this.selectedColumnCount > possibleColumnCount) {
-      this.selectedColumnCount = possibleColumnCount;
-    }
-
-    if (screenWidth < 500) {
-      this.flexLayout = false;
-    }
+    this.selectedColumnCount = this.columnCounts.length > 1 ? this.columnCounts[1] : this.columnCounts[0];
+    this.columnLayoutInHeader = screenWidth < 500 ? false : true;
   }
 
   private calculateChartWidth() {
