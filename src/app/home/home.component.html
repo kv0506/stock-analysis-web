@@ -1,43 +1,24 @@
-<nav class="navbar navbar-dark navbar-expand-lg bg-primary sticky-top">
-  <div class="container-fluid">
-    <a class="navbar-brand" href="#" routerLink="/">
-      Stock Analysis
-    </a>
-    <button
-      aria-controls="navbarSupportedContent"
-      aria-expanded="false"
-      aria-label="Toggle navigation"
-      class="navbar-toggler"
-      data-bs-target="#navbarSupportedContent"
-      data-bs-toggle="collapse"
-      type="button"
-    >
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <div class="navbar-nav me-auto mb-2 mb-lg-0">
-        <div class="nav-item mx-1" *ngFor="let index of indexes">
-          <app-ticker [index]="index"></app-ticker>
-        </div>
-      </div>
-      <ul class="navbar-nav d-flex">
-        <li class="nav-item mx-1">
-          <select class="form-select" [(ngModel)]="selectedColumnCount" (change)="columnCountChanged()">
-            <option *ngFor="let columnCount of columnCounts" [value]="columnCount">{{columnCount}}</option>
-          </select>
-        </li>
-        <li class="nav-item mx-1">
-          <select class="form-select" [(ngModel)]="selectedUser" (change)="userChanged()">
-            <option *ngFor="let user of users" [value]="user.name">{{user.name}}</option>
-          </select>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#" routerLink="/users">Admin</a>
-        </li>
-      </ul>
+<div class="container-fluid bg-primary text-white">
+  <div class="d-flex {{flexLayout ? 'align-items-center' : 'flex-column'}}">
+    <div class="me-auto p-2"><a class="nav-link" href="#" routerLink="/">Stock Analysis</a></div>
+    <div class="p-1" *ngFor="let index of indexes">
+      <app-ticker [index]="index"></app-ticker>
+    </div>
+    <div class="p-1">
+      <select class="form-select" [(ngModel)]="selectedColumnCount" (change)="columnCountChanged()">
+        <option *ngFor="let columnCount of columnCounts" [value]="columnCount">{{columnCount}}</option>
+      </select>
+    </div>
+    <div class="p-1">
+      <select class="form-select" [(ngModel)]="selectedUser" (change)="userChanged()">
+        <option *ngFor="let user of users" [value]="user.name">{{user.name}}</option>
+      </select>
+    </div>
+    <div class="p-2">
+      <a class="nav-link" href="#" routerLink="/admin">Admin</a>
     </div>
   </div>
-</nav>
+</div>
 
 <div class="p-3">
   <div class="row">

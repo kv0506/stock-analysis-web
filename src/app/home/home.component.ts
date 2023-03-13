@@ -17,6 +17,7 @@ export class HomeComponent implements OnInit {
   public bootstrapColClass: string;
   public selectedUser: string;
   public selectedColumnCount: number = 2;
+  public flexLayout: boolean = true;
 
   constructor(private dataService: DataService) {
   }
@@ -56,6 +57,10 @@ export class HomeComponent implements OnInit {
 
     if (this.selectedColumnCount > possibleColumnCount) {
       this.selectedColumnCount = possibleColumnCount;
+    }
+
+    if (screenWidth < 500) {
+      this.flexLayout = false;
     }
   }
 
